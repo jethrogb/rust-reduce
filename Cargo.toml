@@ -1,0 +1,15 @@
+[package]
+name = "rust-reduce"
+version = "0.1.0"
+authors = ["Jethro Beekman <jethro@jbeekman.nl>"]
+edition = "2018"
+license = "AGPL-3.0"
+description = "`rust-reduce` will try to make the source file smaller by interpreting it as valid Rust code and intelligently removing parts of the code."
+repository = "https://github.com/jethrogb/rust-reduce"
+
+[dependencies]
+syn = { version = "0.15", features = ["full", "visit-mut", "extra-traits"] } # MIT/Apache-2.0
+syn-inline-mod = "0.2"                                                       # MIT
+quote = "0.6"                                                                # MIT/Apache-2.0
+tempfile = "3"                                                               # MIT/Apache-2.0
+clap = { version = "2.33", default-features = false }                        # MIT
