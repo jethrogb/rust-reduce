@@ -90,6 +90,8 @@ The original file may refer to modules in different files, these will be inlined
 
     eprintln!("Pruning items");
     transforms::prune_items::prune_items(&mut inlined_file, &mut try_compile);
+    eprintln!("Removing #[derive] attributes");
+    transforms::remove_derive_attrs::remove_derive_attrs(&mut inlined_file, &mut try_compile);
     eprintln!("Removing #[doc] attributes");
     transforms::remove_doc_attrs::remove_doc_attrs(&mut inlined_file, &mut try_compile);
     eprintln!("Clearing block bodies");

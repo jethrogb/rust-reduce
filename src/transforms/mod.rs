@@ -16,5 +16,6 @@
 // along with rust-reduce.  If not, see <https://www.gnu.org/licenses/>.
 
 pub mod prune_items;
+pub mod remove_derive_attrs;
 pub mod remove_doc_attrs;
 pub mod clear_blocks;
