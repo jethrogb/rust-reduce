@@ -22,7 +22,7 @@ pub fn prune_items<F: FnMut(&syn::File) -> bool>(file: &mut syn::File, mut try_c
     let mut index = 0;
     loop {
         let backup = file.clone();
-        if !file.items.prune(level, &mut {index}) {
+        if !file.items.prune(level, &mut { index }) {
             if index == 0 {
                 break;
             }
@@ -41,48 +41,49 @@ pub fn prune_items<F: FnMut(&syn::File) -> bool>(file: &mut syn::File, mut try_c
 }
 
 trait Prune {
-	fn prune(&mut self, level: usize, index: &mut usize) -> bool;
+    fn prune(&mut self, level: usize, index: &mut usize) -> bool;
 }
 
 impl Prune for Vec<syn::Item> {
-	fn prune(&mut self, level: usize, index: &mut usize) -> bool {
-		if level == 0 {
-			if *index < self.len() {
-				self.remove(*index);
-				true
-			} else {
-				*index -= self.len();
-				false
-			}
-		} else {
-			for item in self {
-				if match item {
-					syn::Item::Mod(syn::ItemMod { content: Some((_, items)), .. })
-						=> items.prune(level - 1, index),
-					syn::Item::Impl(syn::ItemImpl { items, .. })
-						=> items.prune(level - 1, index),
-					_ => false
-				} {
-					return true
-				}
-			}
-			false
-		}
-	}
+    fn prune(&mut self, level: usize, index: &mut usize) -> bool {
+        if level == 0 {
+            if *index < self.len() {
+                self.remove(*index);
+                true
+            } else {
+                *index -= self.len();
+                false
+            }
+        } else {
+            for item in self {
+                if match item {
+                    syn::Item::Mod(syn::ItemMod {
+                        content: Some((_, items)),
+                        ..
+                    }) => items.prune(level - 1, index),
+                    syn::Item::Impl(syn::ItemImpl { items, .. }) => items.prune(level - 1, index),
+                    _ => false,
+                } {
+                    return true;
+                }
+            }
+            false
+        }
+    }
 }
 
 impl Prune for Vec<syn::ImplItem> {
-	fn prune(&mut self, level: usize, index: &mut usize) -> bool {
-		if level == 0 {
-			if *index < self.len() {
-				self.remove(*index);
-				true
-			} else {
-				*index -= self.len();
-				false
-			}
-		} else {
-			false
-		}
-	}
+    fn prune(&mut self, level: usize, index: &mut usize) -> bool {
+        if level == 0 {
+            if *index < self.len() {
+                self.remove(*index);
+                true
+            } else {
+                *index -= self.len();
+                false
+            }
+        } else {
+            false
+        }
+    }
 }

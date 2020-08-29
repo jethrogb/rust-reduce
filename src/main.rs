@@ -15,7 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with rust-reduce.  If not, see <https://www.gnu.org/licenses/>.
 
-use std::{ffi::OsString, io::Write, process::{Command, Stdio}};
+use std::{
+    ffi::OsString,
+    io::Write,
+    process::{Command, Stdio},
+};
 
 use clap::clap_app;
 use quote::ToTokens;
@@ -47,7 +51,10 @@ The original file may refer to modules in different files, these will be inlined
     ).get_matches();
 
     let mut cmd = vec![matches.value_of_os("CMD").expect("validated").to_owned()];
-    let mut iter = matches.values_of_os("ARGS").expect("validated").map(ToOwned::to_owned);
+    let mut iter = matches
+        .values_of_os("ARGS")
+        .expect("validated")
+        .map(ToOwned::to_owned);
     let file = iter.next_back().expect("validated");
     cmd.extend(iter);
 
@@ -58,7 +65,8 @@ The original file may refer to modules in different files, these will be inlined
 
     let mut inlined_file = match InlinerBuilder::new()
         .error_not_found(true)
-        .parse_and_inline_modules(file.as_ref()) {
+        .parse_and_inline_modules(file.as_ref())
+    {
         Ok(f) => f,
         Err(InlineError::NotFound(missing)) => {
             eprintln!("rust-reduce: file not found");
@@ -66,16 +74,19 @@ The original file may refer to modules in different files, these will be inlined
                 eprintln!("    mod {} @ {}:{}", modname, loc.path.display(), loc.line);
             }
             std::process::exit(1);
-        },
-        Err(_) => unimplemented!()
+        }
+        Err(_) => unimplemented!(),
     };
     let mut output = (if matches.is_present("ONCE") {
         output::WaitGuard::new::<output::LastWriter, _>
     } else {
         output::WaitGuard::new::<output::AsyncWriter, _>
     })(
-        matches.value_of_os("FILE").map(ToOwned::to_owned).unwrap_or(file),
-        !matches.is_present("FILE")
+        matches
+            .value_of_os("FILE")
+            .map(ToOwned::to_owned)
+            .unwrap_or(file),
+        !matches.is_present("FILE"),
     );
 
     let mut try_compile = |reduced_file: &_| {
@@ -106,7 +117,7 @@ fn run_with_path<P: AsRef<std::path::Path>>(cmd: &[OsString], path: &P) -> bool 
         .status()
     {
         Ok(ref stat) if stat.success() => true,
-        _ => false
+        _ => false,
     }
 }
 
