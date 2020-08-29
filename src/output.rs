@@ -15,7 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with rust-reduce.  If not, see <https://www.gnu.org/licenses/>.
 
-use std::{ffi::OsStr, fs, io::Write, path::PathBuf, process::{Command, Stdio}, sync::mpsc, thread::{self, JoinHandle}};
+use std::{
+    ffi::OsStr,
+    fs,
+    io::Write,
+    path::PathBuf,
+    process::{Command, Stdio},
+    sync::mpsc,
+    thread::{self, JoinHandle},
+};
 
 use quote::ToTokens;
 
@@ -39,14 +47,21 @@ impl WaitGuard {
 
     pub fn output_formatted(&mut self, reduced_file: &syn::File) {
         let path = self.path.take();
-        let WaitGuard { constructor, need_backup, .. } = *self;
-        self.inner.get_or_insert_with(|| constructor(path.unwrap(), need_backup))
+        let WaitGuard {
+            constructor,
+            need_backup,
+            ..
+        } = *self;
+        self.inner
+            .get_or_insert_with(|| constructor(path.unwrap(), need_backup))
             .output(reduced_file.into_token_stream().to_string())
     }
 }
 
 pub trait OutputType {
-    fn new(path: PathBuf, need_backup: bool) -> Box<OutputType> where Self: Sized;
+    fn new(path: PathBuf, need_backup: bool) -> Box<OutputType>
+    where
+        Self: Sized;
     fn output(&mut self, reduced_file: String);
 }
 
@@ -64,7 +79,8 @@ impl OutputType for AsyncWriter {
                 backed_up: !need_backup,
                 file,
                 chan: recv,
-            }.run()
+            }
+            .run()
         });
 
         Box::new(AsyncWriter {
@@ -116,7 +132,7 @@ impl Drop for LastWriter {
 
 enum Message {
     Work(String),
-    Quit
+    Quit,
 }
 
 struct TargetFileWorker {
@@ -145,14 +161,20 @@ impl TargetFileWorker {
 
         match Command::new("rustfmt")
             .stdout(if self.file == OsStr::new("-") {
-                    Stdio::inherit()
-                } else {
-                    Stdio::from(fs::File::create(&self.file).unwrap())
-                })
+                Stdio::inherit()
+            } else {
+                Stdio::from(fs::File::create(&self.file).unwrap())
+            })
             .stdin(Stdio::piped())
-            .spawn() {
+            .spawn()
+        {
             Ok(mut child) => {
-                child.stdin.take().unwrap().write_all(reduced_file.as_bytes()).unwrap();
+                child
+                    .stdin
+                    .take()
+                    .unwrap()
+                    .write_all(reduced_file.as_bytes())
+                    .unwrap();
                 child.wait().unwrap();
             }
             Err(_) => {
@@ -160,7 +182,9 @@ impl TargetFileWorker {
                     Box::new(std::io::stdout()) as Box<Write>
                 } else {
                     Box::new(fs::File::create(&self.file).unwrap())
-                }.write_all(reduced_file.as_bytes()).unwrap();
+                }
+                .write_all(reduced_file.as_bytes())
+                .unwrap();
             }
         }
     }

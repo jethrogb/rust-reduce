@@ -15,6 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with rust-reduce.  If not, see <https://www.gnu.org/licenses/>.
 
+pub mod clear_blocks;
 pub mod prune_items;
 pub mod remove_doc_attrs;
-pub mod clear_blocks;

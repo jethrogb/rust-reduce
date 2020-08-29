@@ -47,15 +47,13 @@ macro_rules! tests {
     }
 }
 
-tests!(
-    futures_core
-);
+tests!(futures_core);
 
 fn find_rust_reduce() -> PathBuf {
     let mut path = env::current_exe().unwrap();
     path.pop();
-    if path.ends_with("deps") { 
-        path.pop(); 
+    if path.ends_with("deps") {
+        path.pop();
     }
     path.push("rust-reduce");
     path.set_extension(env::consts::EXE_EXTENSION);
