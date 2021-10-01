@@ -8,8 +8,8 @@ description = "`rust-reduce` will try to make the source file smaller by interpr
 repository = "https://github.com/jethrogb/rust-reduce"
 
 [dependencies]
-syn = { version = "0.15", features = ["full", "visit-mut", "extra-traits"] } # MIT/Apache-2.0
-syn-inline-mod = "0.2"                                                       # MIT
-quote = "0.6"                                                                # MIT/Apache-2.0
+syn = { version = "1.0", features = ["full", "visit-mut", "extra-traits"] }  # MIT/Apache-2.0
+syn-inline-mod = "0.3"                                                       # MIT
+quote = "1.0"                                                                # MIT/Apache-2.0
 tempfile = "3"                                                               # MIT/Apache-2.0
 clap = { version = "2.33", default-features = false }                        # MIT

@@ -16,32 +16,31 @@
 // along with rust-reduce.  If not, see <https://www.gnu.org/licenses/>.
 
 /// Try to remove each `#[doc]` attribute (this includes doc comments).
-
-use syn::{*, visit_mut::*};
+use syn::{visit_mut::*, *};
 
 pub fn remove_doc_attrs<F: FnMut(&File) -> bool>(file: &mut File, mut try_compile: F) {
-    let mut visitor = AttrContainerVisitor {
-        backup: None,
-        cur_index: 0,
-        target_index: 1,
-    };
+	let mut visitor = AttrContainerVisitor {
+		backup: None,
+		cur_index: 0,
+		target_index: 1,
+	};
 
-    loop {
-        visitor.cur_index = 0;
+	loop {
+		visitor.cur_index = 0;
 
-        visitor.visit_attr_container(&mut file.attrs);
-        visit_file_mut(&mut visitor, file);
+		visitor.visit_attr_container(&mut file.attrs);
+		visit_file_mut(&mut visitor, file);
 
-        // no more changes to be made
-        if visitor.backup.is_none() {
-            break
-        }
+		// no more changes to be made
+		if visitor.backup.is_none() {
+			break;
+		}
 
-        if try_compile(file) {
-            // this change works, keep it!
-            visitor.backup = None;
-        }
-    }
+		if try_compile(file) {
+			// this change works, keep it!
+			visitor.backup = None;
+		}
+	}
 }
 
 struct AttrContainerVisitor {
@@ -102,7 +101,6 @@ impl VisitMut for AttrContainerVisitor {
 		fn visit_expr_for_loop_mut(&mut self, i: &mut ExprForLoop)
 		fn visit_expr_group_mut(&mut self, i: &mut ExprGroup)
 		fn visit_expr_if_mut(&mut self, i: &mut ExprIf)
-		fn visit_expr_in_place_mut(&mut self, i: &mut ExprInPlace)
 		fn visit_expr_index_mut(&mut self, i: &mut ExprIndex)
 		fn visit_expr_let_mut(&mut self, i: &mut ExprLet)
 		fn visit_expr_lit_mut(&mut self, i: &mut ExprLit)
@@ -134,13 +132,11 @@ impl VisitMut for AttrContainerVisitor {
 		fn visit_foreign_item_static_mut(&mut self, i: &mut ForeignItemStatic)
 		fn visit_foreign_item_type_mut(&mut self, i: &mut ForeignItemType)
 		fn visit_impl_item_const_mut(&mut self, i: &mut ImplItemConst)
-		fn visit_impl_item_existential_mut(&mut self, i: &mut ImplItemExistential)
 		fn visit_impl_item_macro_mut(&mut self, i: &mut ImplItemMacro)
 		fn visit_impl_item_method_mut(&mut self, i: &mut ImplItemMethod)
 		fn visit_impl_item_type_mut(&mut self, i: &mut ImplItemType)
 		fn visit_item_const_mut(&mut self, i: &mut ItemConst)
 		fn visit_item_enum_mut(&mut self, i: &mut ItemEnum)
-		fn visit_item_existential_mut(&mut self, i: &mut ItemExistential)
 		fn visit_item_extern_crate_mut(&mut self, i: &mut ItemExternCrate)
 		fn visit_item_fn_mut(&mut self, i: &mut ItemFn)
 		fn visit_item_foreign_mod_mut(&mut self, i: &mut ItemForeignMod)
